@@ -23,106 +23,15 @@ import { addStation } from "../../../actions/stationActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
-function addMarkers(stores,map) {
-  /* For each feature in the GeoJSON object above: */
-  stores.features.forEach(function(marker) {
-    /* Create a div element for the marker. */
-    var el = document.createElement('div');
-    /* Assign a unique `id` to the marker. */
-    el.id = "marker-" + marker.properties.id;
-    /* Assign the `marker` class to each marker for styling. */
-    el.className = 'marker';
 
-    /**
-     * Create a marker using the div element
-     * defined above and add it to the map.
-     **/
-    new mapboxgl.Marker(el, { offset: [0, -23] })
-        .setLngLat(marker.geometry.coordinates)
-        .addTo(map);
-    el.addEventListener('click', function(e){
-      /* Fly to the point */
-      flyToStore(marker,map);
-      /* Close all other popups and display popup for clicked store */
-      createPopUp(marker,map);
-      /* Highlight listing in sidebar */
-      var activeItem = document.getElementsByClassName('active');
-      e.stopPropagation();
-      if (activeItem[0]) {
-      }
-      var listing = document.getElementById('listing-' + marker.properties.id);
-      listing.classList.add('active');
-    });
-  });
-
-}
-function buildLocationList(data,map) {
-  data.features.forEach(function(store, i){
-    /**
-     * Create a shortcut for `store.properties`,
-     * which will be used several times below.
-     **/
-    var prop = store.properties;
-
-    /* Add a new listing section to the sidebar. */
-    var listings = document.getElementById('listings');
-    var listing = listings.appendChild(document.createElement('div'));
-    /* Assign a unique `id` to the listing. */
-    listing.id = "listing-" + prop.id;
-    /* Assign the `item` class to each listing for styling. */
-    listing.className = 'item';
-
-    /* Add the link to the individual listing created above. */
-    var link = listing.appendChild(document.createElement('a'));
-    link.href = '#';
-    link.className = 'title';
-    link.id = "link-" + prop.id;
-    link.innerHTML = prop.address;
-    link.addEventListener('click', function(e){
-      var clickedListing = store;
-      flyToStore(clickedListing,map);
-      createPopUp(clickedListing,map);
-
-      var activeItem = document.getElementsByClassName('active');
-      if (activeItem[0]) {
-        activeItem[0].classList.remove('active');
-      }
-      this.parentElement.classList.add('active');
-    });
-    /* Add details to the individual listing. */
-    var details = listing.appendChild(document.createElement('div'));
-    details.innerHTML = prop.city;
-    if (prop.phone) {
-      details.innerHTML += ' · ' + prop.phoneFormatted;
-    }
-
-  });
-
-}
-function flyToStore(currentFeature,map) {
-  map.flyTo({
-    center: currentFeature.geometry.coordinates,
-    zoom: 15
-  });
-}
-
-function createPopUp(currentFeature,map) {
-  var popUps = document.getElementsByClassName('mapboxgl-popup');
-  /** Check if there is already a popup on the map and if so, remove it */
-  if (popUps[0]) popUps[0].remove();
-
-  var popup = new mapboxgl.Popup({ closeOnClick: false })
-      .setLngLat(currentFeature.geometry.coordinates)
-      .setHTML('<h3>Sweetgreen</h3>' +
-          '<h4>' + currentFeature.properties.address + '</h4>')
-      .addTo(map);
-}
 //note to self
 //map global functions for now
 // il nidham fil li5ir yidou taw
 //tibdech TOGHZORLOU W T9OUL CHBIH 5AYIB AB3THOU
 // FUCKING FOCUS
-
+function test() {
+  alert("yo");
+}
 
 class Dashboard extends Component {
   mapRef = React.createRef();
@@ -143,16 +52,130 @@ class Dashboard extends Component {
       numberOfBikesAvailable: 0,
       imageData: null,
       selectedFile: null,
-      etat: "Disponible"
+      etat: "Disponible",
+
+      mode : "add"
+
     };
-    this.toggle = this.toggle.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
+  //map
+  flyToStore=(currentFeature,map)=> {
+    map.flyTo({
+      center: currentFeature.geometry.coordinates,
+      zoom: 15
+    });
+  };
+   createPopUp =(currentFeature,map,myInstance)=> {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    /** Check if there is already a popup on the map and if so, remove it */
+    if (popUps[0]) popUps[0].remove();
+     var popup = new mapboxgl.Popup({ closeOnClick: false })
+        .setLngLat(currentFeature.geometry.coordinates)
+        .setHTML('<h3>Sweetgreen</h3>' +
+            '<image center  width="100%" height="100px" src="./assets/img/318x180.svg" alt="Card image cap" />'+
+            '<h4>' + currentFeature.properties.address + '</h4>'
+
+        )
+        .addTo(map);
+     this.setState({
+         title: currentFeature.properties.address, //change mba3d ma tkamil olfa
+         mode: "modify"
+         }
+     );
+     setTimeout(function() {
+       myInstance.toggleModal();
+
+     }, 1000);
+   };
+   addMarkers=(stores,map) =>{
+     var myInstance = this;
+     /* For each feature in the GeoJSON object above: */
+    stores.features.forEach(function(marker) {
+      /* Create a div element for the marker. */
+      var el = document.createElement('div');
+      /* Assign a unique `id` to the marker. */
+      el.id = "marker-" + marker.properties.id;
+      /* Assign the `marker` class to each marker for styling. */
+      el.className = 'marker';
+
+      /**
+       * Create a marker using the div element
+       * defined above and add it to the map.
+       **/
+      new mapboxgl.Marker(el, { offset: [0, -23] })
+          .setLngLat(marker.geometry.coordinates)
+          .addTo(map);
+      el.addEventListener('click', function(e){
+        /* Fly to the point */
+        myInstance.flyToStore(marker,map);
+        /* Close all other popups and display popup for clicked store */
+        myInstance.createPopUp(marker,map,myInstance);
+        /* Highlight listing in sidebar */
+        var activeItem = document.getElementsByClassName('active');
+        e.stopPropagation();
+        if (activeItem[0]) {
+        }
+        var listing = document.getElementById('listing-' + marker.properties.id);
+        listing.classList.add('active');
+      });
+    });
+
+  };
+   buildLocationList =(data,map)=> {
+     var myInstance = this;
+    data.features.forEach(function(store, i){
+      /**
+       * Create a shortcut for `store.properties`,
+       * which will be used several times below.
+       **/
+      var prop = store.properties;
+
+      /* Add a new listing section to the sidebar. */
+      var listings = document.getElementById('listings');
+      var listing = listings.appendChild(document.createElement('div'));
+      /* Assign a unique `id` to the listing. */
+      listing.id = "listing-" + prop.id;
+      /* Assign the `item` class to each listing for styling. */
+      listing.className = 'item';
+
+      /* Add the link to the individual listing created above. */
+      var link = listing.appendChild(document.createElement('a'));
+      link.href = '#';
+      link.className = 'title';
+      link.id = "link-" + prop.id;
+      link.innerHTML = prop.address;
+
+      link.addEventListener('click', function(e){
+
+        var clickedListing = store;
+        myInstance.flyToStore(clickedListing,map);
+
+        var activeItem = document.getElementsByClassName('active');
+        if (activeItem[0]) {
+          activeItem[0].classList.remove('active');
+        }
+        this.parentElement.classList.add('active');
+      });
+      /* Add details to the individual listing. */
+      var details = listing.appendChild(document.createElement('div'));
+      details.innerHTML = prop.city;
+      if (prop.phone) {
+        details.innerHTML += ' · ' + prop.phoneFormatted;
+      }
+
+    });
+
+  };
+
+
+
+  //MAP
+
 
   handlerCancel = e => {
     this.setState({
       title: "",
-      alt: "",
-      lang: "",
       imageData: null,
       selectedFile: null,
       loaded: false,
@@ -202,7 +225,7 @@ class Dashboard extends Component {
     this.props.addStation(newStation);
     this.props.history.push("/stations");
   };
-  toggle() {
+  toggleModal() {
     this.setState({
       modal: !this.state.modal
     });
@@ -211,7 +234,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     const { lng, lat, zoom } = this.state;
-
+    var myinstance =this;
     const map = new mapboxgl.Map({
       container: this.mapRef.current,
       style: 'mapbox://styles/mapbox/streets-v9',
@@ -228,8 +251,8 @@ class Dashboard extends Component {
         type: 'geojson',
         data: stores
       });
-      buildLocationList(stores,map);
-      addMarkers(stores,map);
+      this.buildLocationList(stores,map);
+      this.addMarkers(stores,map);
     });
     map.on('click', function(e) {
       /* Determine if a feature in the "locations" layer exists at that point. */
@@ -242,10 +265,10 @@ class Dashboard extends Component {
         var clickedPoint = features[0];
 
         /* Fly to the point */
-        flyToStore(clickedPoint,map);
+        myinstance.flyToStore(clickedPoint,map);
 
         /* Close all other popups and display popup for clicked store */
-        createPopUp(clickedPoint,map);
+        myinstance.createPopUp(clickedPoint,map);
 
         /* Highlight listing in sidebar (and remove highlight for all other listings) */
         var activeItem = document.getElementsByClassName('active');
@@ -289,7 +312,7 @@ class Dashboard extends Component {
                           <Button
                               type="submit"
                               className="m-2"
-                              onClick={this.toggle}
+                              onClick={()=>{ this.setState({mode:"add"});this.handlerCancel();this.toggleModal()}}
                               style={{width:200}}
                               color="primary"
                           >
@@ -305,8 +328,8 @@ class Dashboard extends Component {
               </Card>
             </Col>
           </Row>
-          <Modal isOpen={this.state.modal} toggle={this.toggle} className="modal-lg" >
-            <ModalHeader toggle={this.toggle}>Add Station</ModalHeader>
+          <Modal isOpen={this.state.modal} toggle={this.toggleModal} className="modal-lg" >
+            <ModalHeader toggle={this.toggleModal}>{this.state.mode=="add"? "ajouter Station":"Modifier station"}</ModalHeader>
             <ModalBody>
               <Card>
                 <CardImg top width="100%" src={this.state.file} alt="Card image cap" />
