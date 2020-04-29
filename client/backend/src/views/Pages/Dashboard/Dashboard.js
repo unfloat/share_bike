@@ -233,6 +233,7 @@ class Dashboard extends Component {
 
 
   componentDidMount() {
+    this.props.getStations().setTimeout(1000);
     const { lng, lat, zoom } = this.state;
     var myinstance =this;
     const map = new mapboxgl.Map({
@@ -291,10 +292,6 @@ class Dashboard extends Component {
   }
   render() {
     const { lng, lat, zoom } = this.state;
-
-
-
-
     return (
         <div className="animated fadeIn">
           <Row>
