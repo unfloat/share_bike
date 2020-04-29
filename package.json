@@ -30,6 +30,7 @@
 		"http": "0.0.0",
 		"is-url-external": "^1.0.3",
 		"jsonwebtoken": "^8.5.1",
+		"mapbox-gl": "^1.10.0",
 		"method-override": "^3.0.0",
 		"mongoose": "^5.7.1",
 		"monk": "^7.1.1",

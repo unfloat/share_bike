@@ -13,8 +13,13 @@ router.get('/', (req, res) => {
     .then((data) => {
       res.json(data);
     })
-    .catch((err) => res.send(err));
+    // .catch((err) => res.send(err));
+    .catch(error => {
+      console.log('caught', error.message);
+    });
+
 });
+
 
 /* GET Single Stations . 
 @Route : stations/:id
