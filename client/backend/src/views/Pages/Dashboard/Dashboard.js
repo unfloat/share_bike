@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component  } from 'react';
 import {
   Button,
   Card,
@@ -246,7 +246,7 @@ class Dashboard extends Component {
     stores.features.forEach(function(store, i){
       store.properties.id = i;
     });
-    map.on('load', () => {
+    map.on('load', ()=> {
       /* Add the data to your map as a layer */
       map.addSource('places', {
         type: 'geojson',
@@ -255,7 +255,7 @@ class Dashboard extends Component {
       this.buildLocationList(stores,map);
       this.addMarkers(stores,map);
     });
-    map.on('click', function (e) {
+    map.on('click', function(e) {
       /* Determine if a feature in the "locations" layer exists at that point. */
       var features = map.queryRenderedFeatures(e.point, {
         layers: ['locations']
@@ -292,6 +292,11 @@ class Dashboard extends Component {
   }
   render() {
     const { lng, lat, zoom } = this.state;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bc42c85c4e8f5744088a66486f093bd11e40cd9f
     return (
         <div className="animated fadeIn">
           <Row>
@@ -320,9 +325,8 @@ class Dashboard extends Component {
                         </div>
                         <div id='listings' className='listings'></div>
                       </div>
-                      <div id='listings' className='listings'></div>
+                      <div  ref={this.mapRef} className="absolute top right  bottom map col-9" />
                     </div>
-                    <div ref={this.mapRef} className="absolute top right  bottom map col-9" />
                   </div>
                 </CardBody>
               </Card>
