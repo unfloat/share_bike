@@ -29,7 +29,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmb
 // il nidham fil li5ir yidou taw
 //tibdech TOGHZORLOU W T9OUL CHBIH 5AYIB AB3THOU
 // FUCKING FOCUS
-
+var map;
 
 class Dashboard extends Component {
   mapRef = React.createRef();
@@ -65,11 +65,11 @@ class Dashboard extends Component {
       zoom: 15
     });
   };
-   createPopUp =(currentFeature,map,myInstance)=> {
+  createPopUp =(currentFeature,map,myInstance)=> {
     var popUps = document.getElementsByClassName('mapboxgl-popup');
     /** Check if there is already a popup on the map and if so, remove it */
     if (popUps[0]) popUps[0].remove();
-     var popup = new mapboxgl.Popup({ closeOnClick: false })
+    var popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat(currentFeature.geometry.coordinates)
         .setHTML('<h3>Sweetgreen</h3>' +
             '<image center  width="100%" height="100px" src="./assets/img/318x180.svg" alt="Card image cap" />'+
@@ -77,19 +77,19 @@ class Dashboard extends Component {
 
         )
         .addTo(map);
-     this.setState({
-         title: currentFeature.properties.address, //change mba3d ma tkamil olfa
-         mode: "modify"
-         }
-     );
-     setTimeout(function() {
-       myInstance.toggleModal();
+    this.setState({
+          title: currentFeature.properties.address, //change mba3d ma tkamil olfa
+          mode: "modify"
+        }
+    );
+    setTimeout(function() {
+      myInstance.toggleModal();
 
-     }, 1000);
-   };
-   addMarkers=(stores,map) =>{
-     var myInstance = this;
-     /* For each feature in the GeoJSON object above: */
+    }, 1000);
+  };
+  addMarkers=(stores,map) =>{
+    var myInstance = this;
+    /* For each feature in the GeoJSON object above: */
     stores.features.forEach(function(marker) {
       /* Create a div element for the marker. */
       var el = document.createElement('div');
@@ -121,8 +121,8 @@ class Dashboard extends Component {
     });
 
   };
-   buildLocationList =(data,map)=> {
-     var myInstance = this;
+  buildLocationList =(data,map)=> {
+    var myInstance = this;
     data.features.forEach(function(store, i){
       /**
        * Create a shortcut for `store.properties`,
@@ -232,6 +232,7 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps){
     if(prevProps.station != this.props.station){
+<<<<<<< HEAD
       const { lng, lat, zoom } = this.state;
       var myinstance = this;
       const map = new mapboxgl.Map({
@@ -240,57 +241,65 @@ class Dashboard extends Component {
         center: [lng, lat],
         zoom
       });
+=======
+>>>>>>> c8ea191da37c7c933051e07becf7f7e3d426b7eb
       console.log(this.props.station.stations);
       stores.features.forEach(function(store, i){
         store.properties.id = i;
       });
-      map.on('load', ()=> {
-        /* Add the data to your map as a layer */
-        map.addSource('places', {
-          type: 'geojson',
-          data: stores
-        });
-        this.buildLocationList(stores,map);
-        this.addMarkers(stores,map);
-      });
-      map.on('click', function(e) {
-        /* Determine if a feature in the "locations" layer exists at that point. */
-        var features = map.queryRenderedFeatures(e.point, {
-          layers: ['locations']
-        });
-
-        /* If yes, then: */
-        if (features.length) {
-          var clickedPoint = features[0];
-
-          /* Fly to the point */
-          myinstance.flyToStore(clickedPoint,map);
-
-          /* Close all other popups and display popup for clicked store */
-          myinstance.createPopUp(clickedPoint,map);
-
-          /* Highlight listing in sidebar (and remove highlight for all other listings) */
-          var activeItem = document.getElementsByClassName('active');
-          if (activeItem[0]) {
-            activeItem[0].classList.remove('active');
-          }
-          var listing = document.getElementById('listing-' + clickedPoint.properties.id);
-          listing.classList.add('active');
-        }
-      });
-      map.on('move', () => {
-        const { lng, lat } = map.getCenter();
-        this.setState({lang:lng,alt:lat});
-        this.setState({
-          lng: lng.toFixed(4),
-          lat: lat.toFixed(4),
-          zoom: map.getZoom().toFixed(2)
-        });
-      });
+      this.buildLocationList(stores,map);
+      this.addMarkers(stores,map);
     }
   }
   componentDidMount() {
+    const { lng, lat, zoom } = this.state;
+    var myinstance =this;
+    map = new mapboxgl.Map({
+      container: this.mapRef.current,
+      style: 'mapbox://styles/mapbox/streets-v9',
+      center: [lng, lat],
+      zoom
+    });
 
+    map.on('load', ()=> {
+      /* Add the data to your map as a layer */
+
+
+    });
+    map.on('click', function(e) {
+      /* Determine if a feature in the "locations" layer exists at that point. */
+      var features = map.queryRenderedFeatures(e.point, {
+        layers: ['locations']
+      });
+
+      /* If yes, then: */
+      if (features.length) {
+        var clickedPoint = features[0];
+
+        /* Fly to the point */
+        myinstance.flyToStore(clickedPoint,map);
+
+        /* Close all other popups and display popup for clicked store */
+        myinstance.createPopUp(clickedPoint,map);
+
+        /* Highlight listing in sidebar (and remove highlight for all other listings) */
+        var activeItem = document.getElementsByClassName('active');
+        if (activeItem[0]) {
+          activeItem[0].classList.remove('active');
+        }
+        var listing = document.getElementById('listing-' + clickedPoint.properties.id);
+        listing.classList.add('active');
+      }
+    });
+    map.on('move', () => {
+      const { lng, lat } = map.getCenter();
+      this.setState({lang:lng,alt:lat});
+      this.setState({
+        lng: lng.toFixed(4),
+        lat: lat.toFixed(4),
+        zoom: map.getZoom().toFixed(2)
+      });
+    });
   }
   render() {
     const { lng, lat, zoom } = this.state;
