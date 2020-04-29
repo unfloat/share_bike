@@ -292,11 +292,8 @@ class Dashboard extends Component {
   }
   render() {
     const { lng, lat, zoom } = this.state;
-<<<<<<< HEAD
-=======
 
 
->>>>>>> bc42c85c4e8f5744088a66486f093bd11e40cd9f
     return (
         <div className="animated fadeIn">
           <Row>
