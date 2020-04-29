@@ -19,7 +19,7 @@ import 'toasted-notes/src/styles.css';
 import './Dashboard.css'
 import mapboxgl from 'mapbox-gl'
 import stores from './constants'
-import { addStation } from "../../../actions/stationActions";
+import {addStation, getStations} from "../../../actions/stationActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -29,15 +29,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmb
 // il nidham fil li5ir yidou taw
 //tibdech TOGHZORLOU W T9OUL CHBIH 5AYIB AB3THOU
 // FUCKING FOCUS
-function test() {
-  alert("yo");
-}
+
 
 class Dashboard extends Component {
   mapRef = React.createRef();
 
   constructor(props: Props) {
     super(props);
+    this.props.getStations();
     this.state = {
       lng: 5,
       lat: 34,
@@ -231,72 +230,72 @@ class Dashboard extends Component {
     });
   }
 
-
-  componentDidMount() {
-    this.props.getStations().setTimeout(1000);
-    const { lng, lat, zoom } = this.state;
-    var myinstance =this;
-    const map = new mapboxgl.Map({
-      container: this.mapRef.current,
-      style: 'mapbox://styles/mapbox/streets-v9',
-      center: [lng, lat],
-      zoom
-    });
-
-    stores.features.forEach(function(store, i){
-      store.properties.id = i;
-    });
-    map.on('load', ()=> {
-      /* Add the data to your map as a layer */
-      map.addSource('places', {
-        type: 'geojson',
-        data: stores
+  componentDidUpdate(prevProps){
+    if(prevProps.station != this.props.station){
+      const { lng, lat, zoom } = this.state;
+      var myinstance =this;
+      const map = new mapboxgl.Map({
+        container: this.mapRef.current,
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: [lng, lat],
+        zoom
       });
-      this.buildLocationList(stores,map);
-      this.addMarkers(stores,map);
-    });
-    map.on('click', function(e) {
-      /* Determine if a feature in the "locations" layer exists at that point. */
-      var features = map.queryRenderedFeatures(e.point, {
-        layers: ['locations']
+      console.log(this.props.station.stations);
+      stores.features.forEach(function(store, i){
+        store.properties.id = i;
       });
+      map.on('load', ()=> {
+        /* Add the data to your map as a layer */
+        map.addSource('places', {
+          type: 'geojson',
+          data: stores
+        });
+        this.buildLocationList(stores,map);
+        this.addMarkers(stores,map);
+      });
+      map.on('click', function(e) {
+        /* Determine if a feature in the "locations" layer exists at that point. */
+        var features = map.queryRenderedFeatures(e.point, {
+          layers: ['locations']
+        });
 
-      /* If yes, then: */
-      if (features.length) {
-        var clickedPoint = features[0];
+        /* If yes, then: */
+        if (features.length) {
+          var clickedPoint = features[0];
 
-        /* Fly to the point */
-        myinstance.flyToStore(clickedPoint,map);
+          /* Fly to the point */
+          myinstance.flyToStore(clickedPoint,map);
 
-        /* Close all other popups and display popup for clicked store */
-        myinstance.createPopUp(clickedPoint,map);
+          /* Close all other popups and display popup for clicked store */
+          myinstance.createPopUp(clickedPoint,map);
 
-        /* Highlight listing in sidebar (and remove highlight for all other listings) */
-        var activeItem = document.getElementsByClassName('active');
-        if (activeItem[0]) {
-          activeItem[0].classList.remove('active');
+          /* Highlight listing in sidebar (and remove highlight for all other listings) */
+          var activeItem = document.getElementsByClassName('active');
+          if (activeItem[0]) {
+            activeItem[0].classList.remove('active');
+          }
+          var listing = document.getElementById('listing-' + clickedPoint.properties.id);
+          listing.classList.add('active');
         }
-        var listing = document.getElementById('listing-' + clickedPoint.properties.id);
-        listing.classList.add('active');
-      }
-    });
-    map.on('move', () => {
-      const { lng, lat } = map.getCenter();
-      this.setState({lang:lng,alt:lat});
-      this.setState({
-        lng: lng.toFixed(4),
-        lat: lat.toFixed(4),
-        zoom: map.getZoom().toFixed(2)
       });
-    });
+      map.on('move', () => {
+        const { lng, lat } = map.getCenter();
+        this.setState({lang:lng,alt:lat});
+        this.setState({
+          lng: lng.toFixed(4),
+          lat: lat.toFixed(4),
+          zoom: map.getZoom().toFixed(2)
+        });
+      });
+    }
+  }
+  componentDidMount() {
+
   }
   render() {
     const { lng, lat, zoom } = this.state;
-<<<<<<< HEAD
-=======
 
 
->>>>>>> bc42c85c4e8f5744088a66486f093bd11e40cd9f
     return (
         <div className="animated fadeIn">
           <Row>
@@ -448,8 +447,9 @@ class Dashboard extends Component {
 const mapStateToProps = state => ({
   user: state.auth.user,
   errors: state.errors,
-  station: state.station
+  station: state.station,
+  loading: state.station.loading
 });
 export default withRouter(
-    connect(mapStateToProps, { addStation })(Dashboard)
+    connect(mapStateToProps, { addStation,getStations })(Dashboard)
 );
