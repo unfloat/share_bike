@@ -233,7 +233,7 @@ class Dashboard extends Component {
   componentDidUpdate(prevProps){
     if(prevProps.station != this.props.station){
       const { lng, lat, zoom } = this.state;
-      var myinstance =this;
+      var myinstance = this;
       const map = new mapboxgl.Map({
         container: this.mapRef.current,
         style: 'mapbox://styles/mapbox/streets-v9',
