@@ -36,7 +36,7 @@ class Dashboard extends Component {
 
   constructor(props: Props) {
     super(props);
-
+    this.props.getStations();
     this.state = {
       lng: 5,
       lat: 34,
@@ -228,12 +228,13 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { stations } = this.props.station;
-    const { prevStations } = prevProps.station;
 
-    console.log("componentDidUpdate" +stations + "prevProps.station" + prevStations);
 
     if (prevProps.station != this.props.station) {
+      const { stations } = this.props.station.stations;
+      const { prevStations } = prevProps.station;
+
+      console.log(this.props.station.stations);
       stores.features.forEach(function (store, i) {
         store.properties.id = i;
       });
@@ -241,9 +242,7 @@ class Dashboard extends Component {
       this.addMarkers(stores, map);
     }
   }
-  async componentDidMount() {
-    await this.props.getStations();
-
+   componentDidMount() {
     const { stations } = this.props.station;
 
     console.log("componentDidMount" + stations);
