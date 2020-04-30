@@ -26,7 +26,10 @@ function SimpleMap({ loading, stations, getStations }) {
   //   },
   //   zoom: 11,
   // };
+<<<<<<< HEAD
 // console.log(stations);
+=======
+>>>>>>> df31b1ef513517da6f0ce44e30457b98101d6334
 
   const mapRef = useRef();
   // get map bounds
@@ -62,14 +65,21 @@ function SimpleMap({ loading, stations, getStations }) {
     zoom,
     options: { radius: 75, maxZoom: 20 }
   });
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> df31b1ef513517da6f0ce44e30457b98101d6334
 
   return (
     // Important! Always set the container height explicitly
     <>
       <Dropdown
+<<<<<<< HEAD
         placeholder='Select Country'
+=======
+        placeholder="Select Country"
+>>>>>>> df31b1ef513517da6f0ce44e30457b98101d6334
         fluid
         search
         selection

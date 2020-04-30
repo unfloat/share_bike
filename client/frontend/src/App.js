@@ -13,7 +13,6 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-          <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
           <Route path="/event/:id" component={Event} />
