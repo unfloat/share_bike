@@ -18,8 +18,13 @@ import {
 import 'toasted-notes/src/styles.css';
 import './Dashboard.css'
 import mapboxgl from 'mapbox-gl'
-import stores from './constants'
-import {addStation, getStations} from "../../../actions/stationActions";
+import {
+  addStation,
+  archiveStation,
+  editStation,
+  getStations,
+  setIsModifiedStationLoading, unarchiveStation
+} from "../../../actions/stationActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
@@ -52,7 +57,7 @@ class Dashboard extends Component {
       imageData: null,
       selectedFile: null,
       etat: "Disponible",
-
+      archived:false,
       mode : "add"
 
     };
@@ -72,17 +77,20 @@ class Dashboard extends Component {
      var popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat([marker.lng,marker.alt])
         .setHTML('<h3>Sweetgreen</h3>' +
-            '<image center  width="100%" height="100px" src="./assets/img/318x180.svg" alt="Card image cap" />'+
+            '<image center  width="100%" height="100px" src="http://localhost:4000/'+marker.image+'" alt="Card image cap" />'+
             '<h4>' + marker.title + '</h4>'
 
         )
         .addTo(map);
      this.setState({
+       file: "http://localhost:4000/"+marker.image,
          title: marker.title, //change mba3d ma tkamil olfa
          mode: "modify",
        numberOfBikesCapacity: marker.numberOfBikesCapacity,
        numberOfBikesAvailable: marker.numberOfBikesAvailable,
        etat: marker.etat,
+       archived : marker.archived,
+       id: marker._id,
          }
      );
      setTimeout(function() {
@@ -94,6 +102,7 @@ class Dashboard extends Component {
      var myInstance = this;
      /* For each feature in the GeoJSON object above: */
      stations.forEach(function(marker) {
+       if(!marker.archived){
       /* Create a div element for the marker. */
       var el = document.createElement('div');
       /* Assign a unique `id` to the marker. */
@@ -115,54 +124,60 @@ class Dashboard extends Component {
         myInstance.createPopUp(marker,map,myInstance);
         /* Highlight listing in sidebar */
         var activeItem = document.getElementsByClassName('active');
-        e.stopPropagation();
-        if (activeItem[0]) {
-        }
+        activeItem.forEach(function (active,i) {
+          active.classList.remove('active');
+        });
         var listing = document.getElementById('listing-' + marker.id);
         listing.classList.add('active');
       });
+       }
     });
 
   };
    buildLocationList =(data,map)=> {
      var myInstance = this;
+     var listings = document.getElementById('listings');
+     listings.innerHTML="";
     data.forEach(function(station, i){
-      /**
-       * Create a shortcut for `store.properties`,
-       * which will be used several times below.
-       **/
-      //var prop = store.properties;
+      if(!station.archived) {
+        /**
+         * Create a shortcut for `store.properties`,
+         * which will be used several times below.
+         **/
+        //var prop = store.properties;
 
-      /* Add a new listing section to the sidebar. */
-      var listings = document.getElementById('listings');
-      var listing = listings.appendChild(document.createElement('div'));
-      /* Assign a unique `id` to the listing. */
-      listing.id = "listing-" + station.id;
-      /* Assign the `item` class to each listing for styling. */
-      listing.className = 'item';
+        /* Add a new listing section to the sidebar. */
 
-      /* Add the link to the individual listing created above. */
-      var link = listing.appendChild(document.createElement('a'));
-      link.href = '#';
-      link.className = 'title';
-      link.id = "link-" + station.id;
-      link.innerHTML = station.title;
+        var listing = listings.appendChild(document.createElement('div'));
+        /* Assign a unique `id` to the listing. */
+        listing.id = "listing-" + station.id;
+        /* Assign the `item` class to each listing for styling. */
+        listing.className = 'item';
 
-      link.addEventListener('click', function(e){
+        /* Add the link to the individual listing created above. */
+        var link = listing.appendChild(document.createElement('a'));
+        link.href = '#';
+        link.className = 'title';
+        link.id = "link-" + station.id;
+        link.innerHTML = station.title;
 
-        myInstance.flyToStore(station,map);
+        link.addEventListener('click', function (e) {
 
-        var activeItem = document.getElementsByClassName('active');
-        if (activeItem[0]) {
-          activeItem[0].classList.remove('active');
+          myInstance.flyToStore(station, map);
+          var activeItem = document.getElementsByClassName('active');
+          activeItem.forEach(function (active, i) {
+            active.classList.remove('active');
+          });
+          if (this.parentElement.classList != 'active')
+            this.parentElement.classList.add('active');
+
+        });
+        /* Add details to the individual listing. */
+        var details = listing.appendChild(document.createElement('div'));
+        details.innerHTML = station.etat;
+        if (station.etat === "Maintenance") {
+          details.innerHTML += ' · ' + "+21651868365";
         }
-        this.parentElement.classList.add('active');
-      });
-      /* Add details to the individual listing. */
-      var details = listing.appendChild(document.createElement('div'));
-      details.innerHTML = station.etat;
-      if (station.etat === "Maintenance") {
-        details.innerHTML += ' · ' + "+21651868365";
       }
 
     });
@@ -173,6 +188,11 @@ class Dashboard extends Component {
 
   //MAP
 
+  handlearchive = (archived, id) => {
+    if (archived) this.props.unarchiveStation(id);
+    else this.props.archiveStation(id);
+    this.props.history.push("/stations/archived");
+  };
 
   handlerCancel = e => {
     this.setState({
@@ -182,8 +202,10 @@ class Dashboard extends Component {
       loaded: false,
       numberOfBikesCapacity: 0,
       numberOfBikesAvailable: 0,
-      etat: ""
+      etat: "Disponible",
+      archived:false,
     });
+    this.toggleModal();
   };
 
   handleInputChange = event => {
@@ -222,10 +244,15 @@ class Dashboard extends Component {
 
     newStation.append("etat", this.state.etat);
     newStation.append("user", this.props.user.id);
-    newStation.append("archived", false);
-    this.props.addStation(newStation);
-    this.props.history.push("/stations");
+    newStation.append("archived", this.state.archived);
+    if (this.state.mode ==="modify"){
+      this.props.editStation(newStation, this.state.id);
+     // console.log(this.state.id);
+    }
+    else{this.props.addStation(newStation);}
+  //  this.props.history.push("/stations");
   };
+
   toggleModal() {
     this.setState({
       modal: !this.state.modal
@@ -238,9 +265,9 @@ class Dashboard extends Component {
       {
         var stations = this.props.station.stations;
       console.log(stations);
-      /*stores.features.forEach(function(store, i){
-        store.properties.id = i;
-      });*/
+      stations.forEach(function(store, i){
+        store.id = i;
+      });
       this.buildLocationList(stations,map);
       this.addMarkers(stations,map);
       }
@@ -258,9 +285,7 @@ class Dashboard extends Component {
 
     map.on('load', ()=> {
       /* Add the data to your map as a layer */
-      /*stores.features.forEach(function(store, i){
-        store.properties.id = i;
-      });*/
+
 
     });
     map.on('click', function(e) {
@@ -284,7 +309,7 @@ class Dashboard extends Component {
         if (activeItem[0]) {
           activeItem[0].classList.remove('active');
         }
-        var listing = document.getElementById('listing-' + clickedPoint.properties.id);
+        var listing = document.getElementById('listing-' + clickedPoint.id);
         listing.classList.add('active');
       }
     });
@@ -300,7 +325,16 @@ class Dashboard extends Component {
   }
   render() {
     const { lng, lat, zoom } = this.state;
-
+    let archive;
+    if (this.state.mode==="modify"){
+      archive = <Button
+          className={'float-right'}
+          color={!this.state.archived ? 'success' : 'danger'}
+          onClick={() => this.handlearchive(this.state.archived, this.state.id)}
+      >
+        {!this.state.archived ? 'Archive' : 'Unarchive'}
+      </Button>
+    }
 
     return (
         <div className="animated fadeIn">
@@ -339,8 +373,8 @@ class Dashboard extends Component {
           </Row>
           <Modal isOpen={this.state.modal} toggle={this.toggleModal} className="modal-lg" >
             <ModalHeader toggle={this.toggleModal}>{this.state.mode=="add"? "ajouter Station":"Modifier station"}</ModalHeader>
-            <ModalBody>
-              <Card>
+            <ModalBody >
+              <Card >
                 <CardImg top width="100%" src={this.state.file} alt="Card image cap" />
                 <CardBody>
                   <CardTitle>Card title</CardTitle>
@@ -376,7 +410,7 @@ class Dashboard extends Component {
                     <Col xs="6" md="9">
                       <Input
                           type="text"
-                          name="lng"
+                          name="lang"
                           value={this.state.lang}
                           onChange={this.handleInputChange}
                           placeholder="Longitude..."
@@ -442,6 +476,7 @@ class Dashboard extends Component {
             </ModalBody>
             <ModalFooter>
               <Button color="primary" onClick={this.handleSubmit}>Submit</Button>{' '}
+              {archive}
               <Button color="secondary" onClick={this.handlerCancel}>Cancel</Button>
             </ModalFooter>
           </Modal>
@@ -454,8 +489,10 @@ const mapStateToProps = state => ({
   user: state.auth.user,
   errors: state.errors,
   station: state.station,
-  loading: state.station.loading
+  loading: state.station.loading,
+  isModified: state.station.isModified
 });
 export default withRouter(
-    connect(mapStateToProps, { addStation,getStations })(Dashboard)
+    connect(mapStateToProps, { addStation,getStations,    editStation,
+      setIsModifiedStationLoading,archiveStation,unarchiveStation })(Dashboard)
 );

@@ -17,7 +17,6 @@ function App() {
           <Route exact path="/" component={Homepage} />
           <Route path="/event/:id" component={Event} />
         </Switch>
-          <Footer />
       </BrowserRouter>
     </Provider>
   );

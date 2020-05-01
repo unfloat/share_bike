@@ -69,6 +69,11 @@ export default {
       icon: "fa fa-quote-right",
       children: [
         {
+          name: "BikesMap",
+          url: "/bikes/Map",
+          icon: "fa fa-plus"
+        },
+        {
           name: "Ajouter",
           url: "/bikes/add",
           icon: "fa fa-plus"

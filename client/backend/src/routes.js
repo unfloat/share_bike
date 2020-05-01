@@ -19,6 +19,7 @@ const ArchivedStations = React.lazy(() =>
 );
 
 const Bikes = React.lazy(() => import("./views/Bike/Bikes"));
+const BikesMap = React.lazy(() => import("./views/Bike/BikesMap"));
 const BikeForm = React.lazy(() => import("./views/Bike/BikeForm"));
 const UpdateBike = React.lazy(() => import("./views/Bike/UpdateBike"));
 const DetailsBike = React.lazy(() => import("./views/Bike/DetailsBike"));
@@ -91,6 +92,7 @@ const routes = [
 
   { path: "/bikes", exact: true, name: "Bikes", component: Bikes },
   { path: "/bikes/show", exact: true, name: "", component: Bikes },
+  { path: "/bikes/Map", exact: true, name: "", component: BikesMap },
   { path: "/bikes/add", exact: true, name: "Ajouter", component: BikeForm },
   {
     path: "/bikes/update/:id",

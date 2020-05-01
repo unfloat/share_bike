@@ -234,6 +234,8 @@ function Homepage() {
             </section> {/* end pricing */}
             {/* Testimonials Section
     ================================================== */}
+
+            <Events />
             <section id="testimonials">
                 <div className="row">
                     <div className="col-twelve">

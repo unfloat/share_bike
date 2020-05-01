@@ -49,7 +49,7 @@ class Stations extends Component {
 
     let allStations = stations.filter(station => {
       return station.archived === false;
-    });;
+    });
 
     if (this.state.search !== '') {
       allStations = allStations.filter(station => {
