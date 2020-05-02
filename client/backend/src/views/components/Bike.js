@@ -19,6 +19,8 @@ class Bike extends Component {
   handleChange = (archived, id) => {
     if (archived) this.props.unarchiveBike(id);
     else this.props.archiveBike(id);
+    if (this.props.map)
+      this.props.history.push('/bikes/archived');
   };
 
   render() {
@@ -57,7 +59,7 @@ class Bike extends Component {
 
             </p>
             <hr className="my-2" />
-            <CardImg src={`http://localhost:4000/${bike.image}`} alt={bike.image} />
+            <CardImg src={bike.image?`http://localhost:4000/${bike.image}`:"http://localhost:4000/uploads/318x180.svg"} alt={bike.image} />
             <hr className="my-2" />
             <Button onClick={() => this.handleDetailsButton(bike._id)} block color="primary">
               Details

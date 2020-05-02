@@ -17,6 +17,7 @@ import {
   Input
 } from 'reactstrap';
 import 'toasted-notes/src/styles.css';
+import {getStations} from "../../actions/stationActions";
 
 class Bikes extends Component {
   state = {
@@ -27,6 +28,7 @@ class Bikes extends Component {
 
   componentDidMount() {
    this.props.getBikes();
+   this.props.getStations();
   }
 
 
@@ -39,6 +41,7 @@ class Bikes extends Component {
   };
 
   handleInputChange = event => {
+    console.log(event.target.value);
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -46,10 +49,11 @@ class Bikes extends Component {
 
   render() {
     const { bikes } = this.props.bike;
+    const { stations } = this.props.station;
 
     let allBikes = bikes.filter(bike => {
       return bike.archived === false;
-    });;
+    });
 
     if (this.state.search !== '') {
       allBikes = allBikes.filter(bike => {
@@ -57,8 +61,9 @@ class Bikes extends Component {
       });
     }
     if (this.state.type !== '') {
+      console.log(bikes[0].station.title);
       allBikes = allBikes.filter(bike => {
-        return bike.type.indexOf(this.state.type) !== -1;
+        return bike.station.indexOf(this.state.type) !== -1;
       });
     }
 
@@ -102,8 +107,9 @@ class Bikes extends Component {
                           onChange={this.handleInputChange}
                         >
                           <option value="">veuillez choisir le type</option>
-                          <option value="sportif">Sportif</option>
-                          <option value="autres">Autres</option>
+                          {this.props.loading2
+                              ? 'Loading...'
+                              : stations.map((station, index) =>  !station.archived?  <option value={station._id}>{station.title}</option>:"")}
                         </Input>
                       </InputGroup>
                     </Col>
@@ -147,10 +153,12 @@ const mapStateToProps = state => ({
   user: state.auth.user,
   errors: state.errors,
   bike: state.bike,
-  loading: state.bike.loading
+  loading: state.bike.loading,
+  loading2: state.station.loading,
+  station: state.station,
 });
 
 export default connect(
   mapStateToProps,
-  { getBikes }
+  { getBikes,getStations }
 )(Bikes);

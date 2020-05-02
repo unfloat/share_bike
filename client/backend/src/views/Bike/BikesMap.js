@@ -4,7 +4,7 @@ import {
     Card,
     CardBody,
     CardHeader,
-    Col, InputGroup,
+    Col,
     Row,
     Modal,
     ModalHeader,
@@ -15,24 +15,19 @@ import {
     NavLink,
     TabContent,
     TabPane,
-    CardText,
     CardTitle,
-    CardSubtitle,
     CardImg, Label, Input, FormText, FormGroup
 } from 'reactstrap';
 import 'toasted-notes/src/styles.css';
 import './BikesMap.css'
 import mapboxgl from 'mapbox-gl'
-import {addStation, editStation, getStations, setIsModifiedStationLoading} from "../../actions/stationActions";
+import {addBikeToStation, editStation, getStations, setIsModifiedStationLoading} from "../../actions/stationActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import Bike from "../components/Bike";
 mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
 
-//note to self
-//map global functions for now
-// il nidham fil li5ir yidou taw
-//tibdech TOGHZORLOU W T9OUL CHBIH 5AYIB AB3THOU
-// FUCKING FOCUS
+
 var map;
 
 class BikesMap extends Component {
@@ -47,6 +42,7 @@ class BikesMap extends Component {
             zoom: 1.5,
             loaded:false,
             modal:false,
+            bikes:[],
             title: "",
             file: "http://localhost:3002/assets/img/318x180.svg",
             imageData: null,
@@ -56,7 +52,6 @@ class BikesMap extends Component {
             disponibilite: "Disponible",
             type: "honda",
             stationID: 0,
-            mode : "add",
             activeTab: '1',
         };
         this.toggleModal = this.toggleModal.bind(this);
@@ -70,8 +65,9 @@ class BikesMap extends Component {
     };
     createPopUp =(marker,map,myInstance)=> {
         var popUps = document.getElementsByClassName('mapboxgl-popup');
-        /** Check if there is already a popup on the map and if so, remove it */
         if (popUps[0]) popUps[0].remove();
+        var image;
+
         var popup = new mapboxgl.Popup({ closeOnClick: false })
             .setLngLat([marker.lng,marker.alt])
             .setHTML('<h3>Sweetgreen</h3>' +
@@ -81,7 +77,8 @@ class BikesMap extends Component {
             )
             .addTo(map);
         this.setState({
-
+                id: marker._id,
+                bikes : marker.bikes,
             }
         );
         setTimeout(function() {
@@ -91,35 +88,26 @@ class BikesMap extends Component {
     };
     addMarkers=(stations,map) =>{
         var myInstance = this;
-        /* For each feature in the GeoJSON object above: */
         stations.forEach(function(marker) {
-            /* Create a div element for the marker. */
+            if(!marker.archived) {
             var el = document.createElement('div');
-            /* Assign a unique `id` to the marker. */
             el.id = "marker-" + marker.id;
-            /* Assign the `marker` class to each marker for styling. */
             el.className = 'marker';
 
-            /**
-             * Create a marker using the div element
-             * defined above and add it to the map.
-             **/
-            new mapboxgl.Marker(el, { offset: [0, -23] })
-                .setLngLat([marker.lng,marker.alt])
+            new mapboxgl.Marker(el, {offset: [0, -23]})
+                .setLngLat([marker.lng, marker.alt])
                 .addTo(map);
-            el.addEventListener('click', function(e){
-                /* Fly to the point */
-                myInstance.flyToStore(marker,map);
-                /* Close all other popups and display popup for clicked store */
-                myInstance.createPopUp(marker,map,myInstance);
-                /* Highlight listing in sidebar */
+            el.addEventListener('click', function (e) {
+                myInstance.flyToStore(marker, map);
+                myInstance.createPopUp(marker, map, myInstance);
                 var activeItem = document.getElementsByClassName('active');
-                activeItem.forEach(function (active,i) {
+                activeItem.forEach(function (active, i) {
                     active.classList.remove('active');
                 });
                 var listing = document.getElementById('listing-' + marker.id);
                 listing.classList.add('active');
             });
+        }
         });
 
     };
@@ -128,51 +116,36 @@ class BikesMap extends Component {
         var listings = document.getElementById('listings');
         listings.innerHTML="";
         data.forEach(function(station, i){
-            /**
-             * Create a shortcut for `store.properties`,
-             * which will be used several times below.
-             **/
-            //var prop = store.properties;
+            if(!station.archived) {
+                var listing = listings.appendChild(document.createElement('div'));
+                listing.id = "listing-" + station.id;
+                listing.className = 'item';
+                var link = listing.appendChild(document.createElement('a'));
+                link.href = '#';
+                link.className = 'title';
+                link.id = "link-" + station.id;
+                link.innerHTML = station.title;
+                link.addEventListener('click', function (e) {
 
-            /* Add a new listing section to the sidebar. */
+                    myInstance.flyToStore(station, map);
+                    var activeItem = document.getElementsByClassName('active');
+                    activeItem.forEach(function (active, i) {
+                        active.classList.remove('active');
+                    });
+                    if (this.parentElement.classList !== 'active')
+                        this.parentElement.classList.add('active');
 
-            var listing = listings.appendChild(document.createElement('div'));
-            /* Assign a unique `id` to the listing. */
-            listing.id = "listing-" + station.id;
-            /* Assign the `item` class to each listing for styling. */
-            listing.className = 'item';
-
-            /* Add the link to the individual listing created above. */
-            var link = listing.appendChild(document.createElement('a'));
-            link.href = '#';
-            link.className = 'title';
-            link.id = "link-" + station.id;
-            link.innerHTML = station.title;
-
-            link.addEventListener('click', function(e){
-
-                myInstance.flyToStore(station,map);
-                var activeItem = document.getElementsByClassName('active');
-                activeItem.forEach(function (active,i) {
-                    active.classList.remove('active');
                 });
-                if (this.parentElement.classList!='active')
-                    this.parentElement.classList.add('active');
-
-            });
-            /* Add details to the individual listing. */
-            var details = listing.appendChild(document.createElement('div'));
-            details.innerHTML = station.etat;
-            if (station.etat === "Maintenance") {
-                details.innerHTML += ' · ' + "+21651868365";
+                var details = listing.appendChild(document.createElement('div'));
+                details.innerHTML = station.etat;
+                if (station.etat === "Maintenance") {
+                    details.innerHTML += ' · ' + "+21651868365";
+                }
             }
 
         });
 
     };
-
-
-
     //MAP
 
     setActiveTab = tab=>{
@@ -190,6 +163,7 @@ class BikesMap extends Component {
             etat: "",
             disponibilite: "",
             type: "",
+            file: "http://localhost:3002/assets/img/318x180.svg",
         });
         this.toggleModal();
     };
@@ -208,35 +182,23 @@ class BikesMap extends Component {
         });
     };
     handleSubmit = event => {
-        const newStation = new FormData();
+        const newBike = new FormData();
         if (this.state.loaded) {
-            newStation.append(
-                "imageData",
-                this.state.selectedFile,
-                this.state.selectedFile.name
-            );
+            newBike.append("imageData", this.state.selectedFile, this.state.selectedFile.name);}
+        newBike.append("title", this.state.title);
+        newBike.append("etat", this.state.etat);
+        newBike.append("disponibilite", this.state.disponibilite);
+        newBike.append("type", this.state.type);
+        newBike.append("weight", this.state.weight);
+        newBike.append("user", this.props.user.id);
+        newBike.append("station",this.state.id);
+        newBike.append("archived", false);
+        if (this.state.activeTab ==='1'){
+            this.props.addBikeToStation(newBike);
+            console.log(this.state.id);
+            window.location.reload();
         }
-        newStation.append("title", this.state.title);
-        newStation.append("alt", this.state.alt);
-        newStation.append("lng", this.state.lang);
-        newStation.append(
-            "numberOfBikesCapacity",
-            this.state.numberOfBikesCapacity
-        );
-        newStation.append(
-            "numberOfBikesAvailable",
-            this.state.numberOfBikesAvailable
-        );
 
-        newStation.append("etat", this.state.etat);
-        newStation.append("user", this.props.user.id);
-        newStation.append("archived", this.state.archived);
-        if (this.state.mode ==="modify"){
-            this.props.editStation(newStation, this.state.id);
-            // console.log(this.state.id);
-        }
-        else{this.props.addStation(newStation);}
-        //  this.props.history.push("/stations");
     };
 
     toggleModal() {
@@ -268,29 +230,14 @@ class BikesMap extends Component {
             center: [lng, lat],
             zoom
         });
-
-        map.on('load', ()=> {
-            /* Add the data to your map as a layer */
-
-
-        });
         map.on('click', function(e) {
-            /* Determine if a feature in the "locations" layer exists at that point. */
             var features = map.queryRenderedFeatures(e.point, {
                 layers: ['locations']
             });
-
-            /* If yes, then: */
             if (features.length) {
                 var clickedPoint = features[0];
-
-                /* Fly to the point */
                 myinstance.flyToStore(clickedPoint,map);
-
-                /* Close all other popups and display popup for clicked store */
                 myinstance.createPopUp(clickedPoint,map);
-
-                /* Highlight listing in sidebar (and remove highlight for all other listings) */
                 var activeItem = document.getElementsByClassName('active');
                 if (activeItem[0]) {
                     activeItem[0].classList.remove('active');
@@ -332,14 +279,14 @@ class BikesMap extends Component {
                                                 <Button
                                                     type="submit"
                                                     className="m-2"
-                                                    onClick={()=>{ this.setState({mode:"add"});this.handlerCancel();this.toggleModal()}}
+                                                    onClick={()=>{ this.handlerCancel();this.toggleModal()}}
                                                     style={{width:200}}
                                                     color="primary"
                                                 >
-                                                    <i className="fa fa-dot-circle-o"></i> Ajouter Station
+                                                    <i className="fa fa-dot-circle-o"/> Ajouter Velo
                                                 </Button>
                                             </div>
-                                            <div id='listings' className='listings'></div>
+                                            <div id='listings' className='listings'/>
                                         </div>
                                         <div  ref={this.mapRef} className="absolute top right  bottom map col-9" />
                                     </div>
@@ -349,16 +296,16 @@ class BikesMap extends Component {
                     </Col>
                 </Row>
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal} className="modal-lg" >
-                    <ModalHeader toggle={this.toggleModal}>{this.state.mode=="add"? "ajouter Station":"Modifier station"}</ModalHeader>
+                    <ModalHeader toggle={this.toggleModal}>{this.state.activeTab==='1'? "Ajouter Velo":"Consulter les Velos "}</ModalHeader>
                     <ModalBody >
                         <Nav tabs>
                             <NavItem>
-                                <NavLink className={this.state.activeTab == '1' ? 'active' : ''} onClick={() => this.setActiveTab('1')}>
+                                <NavLink className={this.state.activeTab === '1' ? 'active' : ''} onClick={() => this.setActiveTab('1')}>
                                     Add
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className={this.state.activeTab == '2' ? 'active' : ''} onClick={() => this.setActiveTab('2')}>
+                                <NavLink className={this.state.activeTab === '2' ? 'active' : ''} onClick={() => this.setActiveTab('2')}>
                                     All Bikes
                                 </NavLink>
                             </NavItem>
@@ -366,7 +313,7 @@ class BikesMap extends Component {
                         <TabContent activeTab={this.state.activeTab}>
                             <TabPane tabId="1">
                                 <Card >
-                                    <CardImg top width="100%" src={this.state.file} alt="Card image cap" />
+                                    <CardImg top width="100%" src={this.state.file==null?"http://localhost:4000/uploads/318x180.svg":this.state.file} alt="Card image cap" />
                                     <CardBody>
                                         <CardTitle>Card title</CardTitle>
                                         <FormGroup row>
@@ -462,14 +409,13 @@ class BikesMap extends Component {
                                                     value={this.state.disponibilite}
                                                     onChange={this.handleInputChange}
                                                     type="select"
-                                                    // placeholder="text..."
                                                 >
                                                     <option disabled>
                                                         Veuillez préciser la disponibilité du vélo
                                                     </option>
                                                     <option value="Disponible"> Disponible </option>
                                                     <option value="Reservée"> Reservée </option>
-                                                    <option value="Non Disponible"> Non Disponible </option>
+                                                    <option value="NonDispo"> Non Disponible </option>
 
                                                 </Input>
                                             </Col>
@@ -491,11 +437,19 @@ class BikesMap extends Component {
                                 </Card>
 
                             </TabPane>
-                            <TabPane tabId="2">Tab 2 Content</TabPane>
+                            <TabPane tabId="2">
+                                <Row>
+                                    {!this.state.bikes.length===0
+                                        ? 'Loading...'
+                                        : this.state.bikes.map((bike, index) => !bike.archived?<Bike map key={index} bike={bike} />:"")}
+                                </Row>
+
+                            </TabPane>
                         </TabContent>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.handleSubmit}>Submit</Button>{' '}
+
+                        <Button color={this.state.activeTab==='1'?"primary":"danger"} disabled={this.state.activeTab !== '1'} onClick={this.handleSubmit}>Submit</Button>
                         <Button color="secondary" onClick={this.handlerCancel}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -509,9 +463,10 @@ const mapStateToProps = state => ({
     errors: state.errors,
     station: state.station,
     loading: state.station.loading,
-    isModified: state.station.isModified
+    isModified: state.station.isModified,
+    bike: state.bike,
 });
 export default withRouter(
-    connect(mapStateToProps, { addStation,getStations,    editStation,
+    connect(mapStateToProps, { addBikeToStation,getStations,    editStation,
         setIsModifiedStationLoading })(BikesMap)
 );

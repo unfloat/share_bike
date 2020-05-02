@@ -6,7 +6,7 @@ module.exports = bikeStateTypes = [
 module.exports = bikeDisponibilityTypes = [
     'Disponible',
     'Reservée',
-    'Non Disponible',
+    'NonDispo',
 
 ]
 

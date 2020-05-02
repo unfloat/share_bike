@@ -19,7 +19,7 @@ class detailsStation extends Component {
     this.props.getStation(this.props.match.params.id);
   }
 
-    
+
   render() {
     const { station } = this.props;
 
@@ -33,14 +33,14 @@ class detailsStation extends Component {
                 <strong>Evénement : Image</strong>
               </CardHeader>
               <CardBody>
-              <CardImg src={`http://localhost:4000/${station.image}`} alt={station.image} />
+              <CardImg src={station.image?`http://localhost:4000/${station.image}`:"http://localhost:4000/uploads/318x180.svg"} alt={station.image} />
               </CardBody>
             </Card>
           </Col>
           <Col xs="12" xl="6">
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Evénement <small>Détails</small>
+                <i className="fa fa-align-justify"></i> Station <small>Détails</small>
                 <div className="card-header-actions">
                   <Badge>{station.type}</Badge>
                 </div>
@@ -48,10 +48,21 @@ class detailsStation extends Component {
               <CardBody>
                 <div id="exampleAccordion" data-children=".item">
                   <div className="item">
-                    <h5> Titre :</h5>
+                    <h5 style={{color:"blueviolet"}}> Titre :</h5>
 
                     <p className="mb-3">{station.title}</p>
                   </div>
+                  <div className="item">
+                    <h5 style={{color:"blueviolet"}}> NumberOfBikesCapacity :</h5>
+
+                    <p className="mb-3">{station.numberOfBikesCapacity}</p>
+                  </div>
+                  <div className="item">
+                    <h5 style={{color:"blueviolet"}}> NumberOfBikesAvailable :</h5>
+
+                    <p className="mb-3">{station.numberOfBikesAvailable}</p>
+                  </div>
+
                   <div className="item">
                     <h5>Date Enregistrement :</h5>
 
@@ -66,15 +77,11 @@ class detailsStation extends Component {
                     </p>
                   </div>
                   <div className="item">
-                    <h5>Description :</h5>
+                    <h5 style={{color:"blueviolet"}}> etat :</h5>
 
-                    <p className="mb-3">{station.description}</p>
+                    <p style={{color:"red"}} className="mb-3">{station.etat}</p>
                   </div>
-                  <div className="item">
-                    <h5>Url :</h5>
 
-                    <p className="mb-3">{station.url}</p>
-                  </div>
                 </div>
               </CardBody>
             </Card>

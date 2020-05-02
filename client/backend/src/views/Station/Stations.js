@@ -58,7 +58,7 @@ class Stations extends Component {
     }
     if (this.state.type !== '') {
       allStations = allStations.filter(station => {
-        return station.type.indexOf(this.state.type) !== -1;
+        return station.etat.indexOf(this.state.type) !== -1&& station.archived === false;
       });
     }
 
@@ -102,8 +102,9 @@ class Stations extends Component {
                           onChange={this.handleInputChange}
                         >
                           <option value="">veuillez choisir le type</option>
-                          <option value="sportif">Sportif</option>
-                          <option value="autres">Autres</option>
+                          <option value="Disponible"> Disponible </option>
+                          <option value="Maintenance"> Maintenance </option>
+                          <option value="NonDispo"> Non Disponible </option>
                         </Input>
                       </InputGroup>
                     </Col>

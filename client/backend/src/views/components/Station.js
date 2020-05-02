@@ -53,7 +53,7 @@ class Station extends Component {
               Vélos disponibles :     {station.numberOfBikesAvailable}
             </p>
             <hr className="my-2" />
-            <CardImg src={`http://localhost:4000/${station.image}`} alt={station.image} />
+            <CardImg src={station.image?`http://localhost:4000/${station.image}`:"http://localhost:4000/uploads/318x180.svg"} alt={station.image} />
             <hr className="my-2" />
             <Button onClick={() => this.handleDetailsButton(station._id)} block color="primary">
               Details

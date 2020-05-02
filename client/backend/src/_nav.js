@@ -52,6 +52,11 @@ export default {
       icon: "fa fa-quote-right",
       children: [
         {
+          name: "Map",
+          url: "/stations/Map",
+          icon: "fa fa-plus"
+        },
+        {
           name: "Ajouter",
           url: "/stations/add",
           icon: "fa fa-plus"

@@ -9,7 +9,7 @@ const stationSchema = mongoose.Schema(
     lng: String,
     numberOfBikesCapacity: Number,
     numberOfBikesAvailable: Number,
-    // bikes: [{ type: Schema.Types.ObjectId, ref: 'bike' }],
+      bikes: [{ type: Schema.Types.ObjectId, ref: 'bike' }],
     archived: {
       type: Boolean,
       required: false,

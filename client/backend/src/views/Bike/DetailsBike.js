@@ -13,13 +13,15 @@ class detailsBike extends Component {
       dateDebutString: null
     };
   }
-
+  handleDetailsButton = id => {
+    this.props.history.push('/stations/details/' + id);
+  };
 
   componentDidMount() {
     this.props.getBike(this.props.match.params.id);
   }
 
-    
+
   render() {
     const { bike } = this.props;
 
@@ -33,7 +35,7 @@ class detailsBike extends Component {
                 <strong>Vélo : Image</strong>
               </CardHeader>
               <CardBody>
-              <CardImg src={`http://localhost:4000/${bike.image}`} alt={bike.image} />
+              <CardImg src={bike.image?`http://localhost:4000/${bike.image}`:"http://localhost:4000/uploads/318x180.svg"} alt={bike.image} />
               </CardBody>
             </Card>
           </Col>
@@ -48,17 +50,27 @@ class detailsBike extends Component {
               <CardBody>
                 <div id="exampleAccordion" data-children=".item">
                   <div className="item">
-                    <h5> Titre :</h5>
+                    <h5 style={{color:"blueviolet"}}> Titre :</h5>
 
                     <p className="mb-3">{bike.title}</p>
                   </div>
                   <div className="item">
-                    <h5>Date Enregistrement :</h5>
+                    <h5 style={{color:"blueviolet"}}> weight :</h5>
+
+                    <p className="mb-3">{bike.weight}</p>
+                  </div>
+                  <div className="item">
+                    <h5 style={{color:"blueviolet"}}> Disponibilité :</h5>
+
+                    <p style={{color:"red"}} className="mb-3">{bike.disponibilite}</p>
+                  </div>
+                  <div className="item">
+                    <h5 style={{color:"blueviolet"}}>Date Enregistrement :</h5>
 
                     <p className="mb-3">{bike.createdAt}</p>
                   </div>
                   <div className="item">
-                    <h5> Date Debut - Date Fin :</h5>
+                    <h5 style={{color:"blueviolet"}}> Date Debut - Date Fin :</h5>
 
                     <p className="mb-3">
                       Du {moment(bike.dateStart).format('MMM Do YY')} Jusqu'a{' '}
@@ -66,14 +78,14 @@ class detailsBike extends Component {
                     </p>
                   </div>
                   <div className="item">
-                    <h5>Description :</h5>
+                    <h5 >Station :</h5>
 
-                    <p className="mb-3">{bike.description}</p>
+                    <a href="#" onClick={() => bike.station?this.handleDetailsButton(bike.station._id):"#"} className="mb-3">{bike.station?bike.station.title:"loading"}</a>
                   </div>
                   <div className="item">
-                    <h5>Url :</h5>
+                    <h5>etat :</h5>
 
-                    <p className="mb-3">{bike.url}</p>
+                    <p style={{color:"red"}} className="mb-3">{bike.etat}</p>
                   </div>
                 </div>
               </CardBody>

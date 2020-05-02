@@ -7,7 +7,8 @@ import {
   EDIT_STATION,
   UNARCHIVE_STATION,
   ARCHIVE_STATION,
-  IS_MODIFIED_STATION
+  IS_MODIFIED_STATION,
+  ADD_BIKE_STATION
 } from "../actions/types";
 
 const initialState = {
@@ -49,6 +50,13 @@ export default function(state = initialState, action) {
         stations: [...state.stations,action.payload],
         station: action.payload
       };
+    case ADD_BIKE_STATION:
+      return {
+        ...state,
+        stations: [...state.stations,action.payload],
+        station: action.payload
+      };
+
     case EDIT_STATION:
       return {
         ...state,
@@ -60,12 +68,12 @@ export default function(state = initialState, action) {
         ...state,
         stations: state.stations.filter(station => station._id !== action.payload),
       };
-    case UNARCHIVE_STATION: 
+    case UNARCHIVE_STATION:
     return {
       ...state,
       stations: state.stations.map((station) => station._id === action.payload._id ? station = action.payload : station)
     };
-    case ARCHIVE_STATION: 
+    case ARCHIVE_STATION:
     return {
       ...state,
       stations: state.stations.map((station) => station._id === action.payload._id ? station = action.payload : station)

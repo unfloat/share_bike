@@ -211,7 +211,7 @@ class bikeForm extends Component {
                     </option>
                     <option value="Disponible"> Disponible </option>
                     <option value="Reservée"> Reservée </option>
-                    <option value="Non Disponible"> Non Disponible </option>
+                    <option value="NonDispo"> Non Disponible </option>
 
                   </Input>
                 </Col>

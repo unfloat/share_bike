@@ -12,6 +12,7 @@ const archivedEvents = React.lazy(() =>
 
 const Stations = React.lazy(() => import("./views/Station/Stations"));
 const StationForm = React.lazy(() => import("./views/Station/StationForm"));
+const MapStation = React.lazy(() => import("./views/Station/MapStation"));
 const UpdateStations = React.lazy(() => import("./views/Station/UpdateStations"));
 const DetailsStation = React.lazy(() => import("./views/Station/DetailsStation"));
 const ArchivedStations = React.lazy(() =>
@@ -71,6 +72,7 @@ const routes = [
   { path: "/stations", exact: true, name: "Stations", component: Stations },
   { path: "/stations/show", exact: true, name: "", component: Stations },
   { path: "/stations/add", exact: true, name: "Ajouter", component: StationForm },
+  { path: "/stations/Map", exact: true, name: "Map", component: MapStation },
   {
     path: "/stations/update/:id",
     exact: true,

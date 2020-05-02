@@ -1,6 +1,7 @@
 import axios from "../api";
 import {
   ADD_STATION,
+  ADD_BIKE_STATION,
   GET_STATIONS,
   GET_STATION,
   DELETE_STATION,
@@ -33,6 +34,27 @@ export const addStation = (stationData) => dispatch => {
         })
       }
     })
+};
+export const addBikeToStation = (stationData) => dispatch => {
+  dispatch(clearErrors());
+  axios.post("/stations/BikeStation/add", stationData)
+      .then(res =>
+          dispatch({
+            type: ADD_BIKE_STATION,
+            payload: res.data
+          })
+      )
+      .catch(error => {
+        if (error.response && error.response.data) {
+          dispatch({
+            type: GET_ERRORS,
+            payload: {
+              message: error.response.data,
+              visible: true
+            }
+          })
+        }
+      })
 };
 
 export const editStation = (stationData,id) => dispatch => {
