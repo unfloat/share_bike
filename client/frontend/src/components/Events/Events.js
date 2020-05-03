@@ -3,23 +3,28 @@ import { Grid, Segment, Loader } from 'semantic-ui-react';
 import { getLatestEvents } from '../../actions/eventActions';
 import EventItem from './EventItem';
 import { connect } from 'react-redux';
+import Slider from "react-slick/lib";
 
 function Events({ loading, events, getLatestEvents }) {
+  const slickSettings = {
+    autoplay: true,
+    dots: true,
+    speed: 500,
+  };
+
   useEffect(() => {
     getLatestEvents();
   }, []);
   return (
-    <>
-      <Segment vertical>
-        <Grid container stackable textAlign="center" columns={3}>
+      <>
+        <Slider {...slickSettings} className="slide">
           {loading ? (
-            <Loader active />
+              <Loader active />
           ) : (
-            events.slice(0,3).map((event) => <EventItem key={event._id} event={event} />)
+              events.map((event) => <EventItem key={event._id} event={event} />)
           )}
-        </Grid>
-      </Segment>
-    </>
+        </Slider>
+      </>
   );
 }
 

@@ -18,7 +18,7 @@ function Homepage() {
    ================================================== */}
             <header id="header" className="row">
                 <div className="header-logo">
-                    <a href="index.html">Dazzle</a>
+                    <a href="#">ShareBike</a>
                 </div>
                 <nav id="header-nav-wrap">
                     <ul className="header-main-nav">
@@ -39,11 +39,11 @@ function Homepage() {
                 <div className="home-content">
                     <div className="row contents">
                         <div className="home-content-left">
-                            <h3 data-aos="fade-up">Welcome to Dazzle</h3>
+                            <h3 data-aos="fade-up">Welcome to ShareBike</h3>
                             <h1 data-aos="fade-up">
                                 Creative Landing <br />
                                 Page to Showcase <br />
-                                Your Amazing App.
+                                Our Amazing App.
                             </h1>
                             <div className="buttons" data-aos="fade-up">
                                 <a href="#download" className="smoothscroll button stroke">
@@ -148,6 +148,7 @@ function Homepage() {
                         </div> {/* /bgrid */}
                     </div> {/* end features-list */}
                 </div> {/* end about-features */}
+                <Carousel />
                 <div className="row about-how">
                     <h1 className="intro-header" data-aos="fade-up">How The App Works?</h1>
                     <div className="about-how-content" data-aos="fade-up">
@@ -234,12 +235,16 @@ function Homepage() {
             </section> {/* end pricing */}
             {/* Testimonials Section
     ================================================== */}
+            <div className="row about-how">
+                <h1 style={{color:"white"}} className="intro-header" data-aos="fade-up">These are our latest events!</h1>
+                <Events />
 
-            <Events />
+                {/* end about-how-content */}
+            </div>
             <section id="testimonials">
                 <div className="row">
                     <div className="col-twelve">
-                        <h1 className="intro-header" data-aos="fade-up">What They Say About Our App.</h1>
+                        <h1 className="intro-header" data-aos="fade-up">Our Stations</h1>
                         {<Map />}
                     </div>
                 </div>
@@ -330,7 +335,7 @@ function Homepage() {
                                 94043 US<br />
                             </p>
                             <p>
-                                someone@dazzlesite.com <br />
+                                someone@ShareBikesite.com <br />
                                 Phone: (+63) 555 1212 <br />
                                 Fax: (+63) 555 0100
                             </p>
@@ -363,7 +368,7 @@ function Homepage() {
                     <div className="row">
                         <div className="col-twelve">
                             <div className="copyright">
-                                <span>© Copyright Dazzle 2018.</span>
+                                <span>© Copyright ShareBike 2018.</span>
                                 <span>Design by <a href="http://www.styleshout.com/">styleshout</a></span>
                             </div>
                             <div id="go-top">
