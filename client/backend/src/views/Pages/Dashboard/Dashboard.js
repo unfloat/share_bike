@@ -17,6 +17,8 @@ import 'toasted-notes/src/styles.css';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import CanvasJSReact from '../../../assets/canvasjs.react';
+import {getStations} from "../../../actions/stationActions";
+import {getBikes} from "../../../actions/bikeActions";
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -44,9 +46,31 @@ class Dashboard extends Component {
 
 
   componentDidMount() {
+    this.props.getBikes();
+    this.props.getStations();
 
   }
   render() {
+    const { bikes } = this.props.bike;
+    const { stations } = this.props.station;
+    var honda=0,bmw=0,golf=0;
+    var dataPoints=[];
+    if (!this.props.loading2){
+      stations.forEach(function (station,i) {
+        dataPoints[i]={y:station.bikes.length,label:station.title}
+      });
+      console.log(dataPoints);
+    }
+    if (!this.props.loading){
+      bikes.forEach(function (bike,i) {
+        if (bike.type==="honda")
+          honda++;
+        else if (bike.type==="bmw")
+          bmw++;
+        else
+          golf++;
+      });
+    }
     const options2 = {
       animationEnabled: true,
       exportEnabled: true,
@@ -56,15 +80,13 @@ class Dashboard extends Component {
       },
       data: [{
         type: "pie",
-        indexLabel: "{label}: {y}%",
+        indexLabel: "{label}: {y} {label}",
         startAngle: -90,
         dataPoints: [
-          { y: 20, label: "Airfare" },
-          { y: 24, label: "Food & Drinks" },
-          { y: 20, label: "Accomodation" },
-          { y: 14, label: "Transportation" },
-          { y: 12, label: "Activities" },
-          { y: 10, label: "Misc" }
+          { y: bmw, label: "bmw" },
+          { y: golf, label: "golf" },
+          { y: honda, label: "honda" },
+
         ]
       }]
     };
@@ -83,21 +105,7 @@ class Dashboard extends Component {
         //indexLabel: "{y}", //Shows y value on all Data Points
         indexLabelFontColor: "#5A5757",
         indexLabelPlacement: "outside",
-        dataPoints: [
-          { x: 10, y: 71 },
-          { x: 20, y: 55 },
-          { x: 30, y: 50 },
-          { x: 40, y: 65 },
-          { x: 50, y: 71 },
-          { x: 60, y: 68 },
-          { x: 70, y: 38 },
-          { x: 80, y: 92, indexLabel: "Highest" },
-          { x: 90, y: 54 },
-          { x: 100, y: 60 },
-          { x: 110, y: 21 },
-          { x: 120, y: 49 },
-          { x: 130, y: 36 }
-        ]
+        dataPoints: dataPoints
       }]
     };
     return (
@@ -131,7 +139,11 @@ class Dashboard extends Component {
 const mapStateToProps = state => ({
   user: state.auth.user,
   errors: state.errors,
+  bike: state.bike,
+  loading: state.bike.loading,
+  loading2: state.station.loading,
+  station: state.station,
 });
 export default withRouter(
-    connect(mapStateToProps,)(Dashboard)
+    connect(mapStateToProps,{getStations,getBikes})(Dashboard)
 );

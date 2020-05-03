@@ -61,7 +61,7 @@ class updateBikes extends Component {
   };
 
   fileSelectedHandler = bike => {
-    bike.prbikeDefault(); 
+    bike.prbikeDefault();
     let reader = new FileReader();
     let selectedFile = bike.target.files[0];
 
@@ -80,7 +80,7 @@ class updateBikes extends Component {
     const newBike = new FormData();
     if (this.state.loaded) {
       newBike.append('imageData', this.state.selectedFile, this.state.selectedFile.name);
-    } 
+    }
     newBike.append("title", this.state.title);
 
     newBike.append(
@@ -175,8 +175,9 @@ class updateBikes extends Component {
                     <option disabled>
                       Veuillez préciser le type du vélo
                     </option>
-                    <option value="Marque 1"> Marque 1 </option>
-                    <option value="Marque 2"> Marque 2 </option>
+                    <option value="honda">honda</option>
+                    <option value="bmw">bmw</option>
+                    <option value="golf">golf</option>
                   </Input>
                 </Col>
 

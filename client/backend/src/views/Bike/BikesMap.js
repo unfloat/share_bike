@@ -377,8 +377,9 @@ class BikesMap extends Component {
                                                     <option disabled>
                                                         Veuillez préciser le type du vélo
                                                     </option>
-                                                    <option value="Marque 1"> Marque 1 </option>
-                                                    <option value="Marque 2"> Marque 2 </option>
+                                                    <option value="honda">honda</option>
+                                                    <option value="bmw">bmw</option>
+                                                    <option value="golf">golf</option>
                                                 </Input>
                                             </Col>
 
