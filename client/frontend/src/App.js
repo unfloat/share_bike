@@ -8,12 +8,13 @@ import Header from './components/Header';
 import store from './store';
 import Homepage from './Pages/Homepage';
 import Event from './Pages/Event';
-
+import MapBox from './Mapbox'
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
+            <Route exact path="/" component={MapBox} />
           <Route exact path="/" component={Homepage} />
           <Route path="/event/:id" component={Event} />
         </Switch>

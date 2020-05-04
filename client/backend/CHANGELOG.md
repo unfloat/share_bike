@@ -174,7 +174,7 @@ It's important to use the same instance of the `react-router-dom v5` library wit
 - refactor(App.js): code splitting with `react-loadable` (waiting for release of `react-router-dom`) 
 - refactor(routes.js): code splitting with `React.lazy`, remove `react-loadable`
 - refactor(DefaultLayout): code splitting with `React.lazy` Aside, Footer, Header, routes 
-- refactor(Dashboard): tweak lazy and Suspense for Widget03 
+- refactor(MapStation): tweak lazy and Suspense for Widget03 
 - refactor(Login): add router link to `Register` button 
 - refactor(Register): add margins to social-media buttons  
 - chore: disable eslint warning for href="#" attribute
@@ -208,7 +208,7 @@ It's important to use the same instance of the `react-router-dom v5` library wit
   ]
   ```
 - fix(Cards): `card-header-actions` added to `CardHeader` for `rtl` support
-- feat(Dashboard): new `Suspense` example with Widget03
+- feat(MapStation): new `Suspense` example with Widget03
 - chore: update `@coreui/coreui` to `2.1.0`
 - chore: update `@coreui/react` to `2.1.0`
 - chore: update `node-sass` to `4.10.0`
@@ -371,7 +371,7 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 ##### `v2.0.0-alpha.2`
 - refactor: FullHeader `<AppHeaderDropdown direction="down">` (required prop `direction`)
 - refactor: ButtonDropdowns `<Dropdown direction="up">` (deprecate 'dropup')
-- refactor: Dashboard legend badge pill
+- refactor: MapStation legend badge pill
 - refactor: SocialButtons to BrandButtons `btn-brand`
 - refactor: Buttons spacing `mr-1`
 - update: reactstrap to `5.0.0`
@@ -398,7 +398,7 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 - refactor: Sidebar structure change
 
 ###### `v1.0.8`
-- refactor: Dashboard radio buttons, new `onRadioBtnClick()` method
+- refactor: MapStation radio buttons, new `onRadioBtnClick()` method
 - update: react to `16.2.0`
 - update: Bootstrap `4.0.0-beta.3`
 - update: dependencies
@@ -455,12 +455,12 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 
 ###### `2017.08.24`
 - webpack.config env.prod
-- Dashboard .dropdown-menu-right temp.scss hotfix (full)
+- MapStation .dropdown-menu-right temp.scss hotfix (full)
 - callout.scss .chart-wrapper hotfix (full)
 
 ###### `2017.08.11`
 - Bootstrap 4 beta
-- Dashboard component (full):
+- MapStation component (full):
 	- line chart for social box
 	- sparkline chart for callout
 

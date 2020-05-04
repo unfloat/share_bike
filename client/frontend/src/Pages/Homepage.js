@@ -8,7 +8,7 @@ import '../css/main.css'
 import '../css/vendor.css'
 import '../css/base.css'
 import '../css/fonts.css'
-
+import Mapbox from '../Mapbox'
 function Homepage() {
 
 
@@ -39,11 +39,11 @@ function Homepage() {
                 <div className="home-content">
                     <div className="row contents">
                         <div className="home-content-left">
-                            <h3 data-aos="fade-up">Welcome to ShareBike</h3>
+                            <h3 data-aos="fade-up">Bienvenue sur ShareBike</h3>
                             <h1 data-aos="fade-up">
-                                Creative Landing <br />
-                                Page to Showcase <br />
-                                Our Amazing App.
+                                Page de destination <br />
+                                créative pour notre  <br />
+                                  application.
                             </h1>
                             <div className="buttons" data-aos="fade-up">
                                 <a href="#download" className="smoothscroll button stroke">
@@ -91,9 +91,7 @@ function Homepage() {
                         <h1 className="intro-header" data-aos="fade-up">About Our App</h1>
                     </div>
                     <div className="col-eight">
-                        <p className="lead" data-aos="fade-up">
-                            Excepteur enim magna veniam labore veniam sint. Ex aliqua esse proident ullamco voluptate. Nisi nisi nisi aliqua eiusmod dolor dolor proident deserunt occaecat elit Lorem reprehenderit. Id culpa veniam ex aliqua magna elit pariatur do nulla. Excepteur enim magna veniam labore veniam sint.
-                        </p>
+                        <p className="lead" data-aos="fade-up">Les meilleures applications de cyclisme peuvent parfois être difficiles à localiser, car de nouvelles options affluent constamment sur le marché. Heureusement, nous sommes là pour vous fournir la meilleure solution</p>
                     </div>
                 </div>
                 <div className="row about-features">
@@ -101,53 +99,54 @@ function Homepage() {
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-window" /></span>
                             <div className="service-content">
-                                <h3>Fully Resposive</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
+                                <h3>Payement sécurisé</h3>
+                                <p>Sur place ou via l’application vos payment sont fait sur 2 etapes a l'aide d'un autre serveur dans le cloud.
                                 </p>
                             </div>
                         </div> {/* /bgrid */}
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-image" /></span>
                             <div className="service-content">
-                                <h3>Retina Ready</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
-                                </p>
+                                <h3>Un systeme de maintenance</h3>
+                                <p>Tous les velos sont verifier chaque jour pour garantir un service de haute qualité a nos clients.</p>
                             </div>
                         </div> {/* /bgrid */}
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-paint-brush" /></span>
                             <div className="service-content">
-                                <h3>Stylish Design</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
-                                </p>
+                                <h3>Un systeme de direction</h3>
+                                <p>Vous aide a naviguer en cas ou vous n’etes pas familiatrise avec l’endroit ou vous circuler.</p>
                             </div>
                         </div> {/* /bgrid */}
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-file" /></span>
                             <div className="service-content">
-                                <h3>Clean Code</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
-                                </p>
+                                <h3>Des stations de velos</h3>
+                                <p>Les velos sont maintenues et mis a votre disposition a tous moment.</p>
                             </div>
                         </div> {/* /bgrid */}
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-sliders" /></span>
                             <div className="service-content">
-                                <h3>Easy To Customize</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
+                                <h3>Une application mobile</h3>
+                                <p>Application mobile cross platform fonctionelle sur tous les systemes d'operations.
                                 </p>
                             </div>
                         </div> {/* /bgrid */}
                         <div className="bgrid feature" data-aos="fade-up">
                             <span className="icon"><i className="icon-gift" /></span>
                             <div className="service-content">
-                                <h3>Free of Charge</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
-                                </p>
+                                <h3>Tarif raisonable</h3>
+                                <p>Nos tarifs prennent en consideration l'etat economique de tous les tranches d'age.</p>
                             </div>
                         </div> {/* /bgrid */}
                     </div> {/* end features-list */}
                 </div> {/* end about-features */}
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
                 <Carousel />
                 <div className="row about-how">
                     <h1 className="intro-header" data-aos="fade-up">How The App Works?</h1>
@@ -245,7 +244,9 @@ function Homepage() {
                 <div className="row">
                     <div className="col-twelve">
                         <h1 className="intro-header" data-aos="fade-up">Our Stations</h1>
+                        <div style={{ height: "100vh", width: "100%" }}>
                         {<Map />}
+                        </div>
                     </div>
                 </div>
                 <div className="row owl-wrap">
