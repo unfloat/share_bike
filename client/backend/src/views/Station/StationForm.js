@@ -88,7 +88,7 @@ class stationForm extends Component {
     );
 
     newStation.append("etat", this.state.etat);
-    newStation.append("user", this.props.user.id);
+    newStation.append("user", this.props.user.id._id);
     newStation.append("archived", false);
     this.props.addStation(newStation);
     this.props.history.push("/stations");

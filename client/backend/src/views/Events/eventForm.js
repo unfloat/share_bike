@@ -71,7 +71,7 @@ class eventForm extends Component {
     newEvent.append('description', this.state.description);
     newEvent.append('type', this.state.type);
     newEvent.append('url', this.state.url);
-    newEvent.append('user', this.props.user.id);
+    newEvent.append('user', this.props.user.id._id);
     newEvent.append('archived', false);
 
     this.props.addEvent(newEvent);
@@ -128,7 +128,7 @@ class eventForm extends Component {
                     placeholder="date fin"
                   />
                 </Col>
-                
+
                 <Col md="8">
                   <Label htmlFor="textarea-input">description</Label>
                 </Col>

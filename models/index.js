@@ -3,6 +3,7 @@ const SliderModel = require('./slider.model');
 const BikeModel = require('./bike.model');
 const StationModel = require('./station.model');
 const EventModel = require('./event.model');
+const ReservationModel = require('./reservation.model');
 
 module.exports = {
   UserModel,
@@ -10,4 +11,5 @@ module.exports = {
   BikeModel,
   StationModel,
   EventModel,
+  ReservationModel,
 };

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { StationModel,BikeModel } = require('../models');
+const { ReservationModel,BikeModel } = require('../models');
 const passport = require('passport');
 const { upload } = require('../utils/Uploader');
 
@@ -7,9 +7,9 @@ const { upload } = require('../utils/Uploader');
 @Route : stations/
 */
 router.get('/', (req, res) => {
-    StationModel.find()
+    ReservationModel.find()
         .populate('user')
-        .populate('bikes')
+        .populate({path:'station',populate:{path:'bikes'}})
         .sort('-date')
         .then((data) => {
             res.json(data);
@@ -25,8 +25,22 @@ router.get('/:id', (req, res) => {
         _id: req.params.id,
     };
 
-    StationModel.findOne(query)
+    ReservationModel.findOne(query)
         .populate('user')
+        .populate({path:'station',populate:{path:'bikes'}})
+        .then((data) => {
+            res.json(data);
+        })
+        .catch((err) => res.send(err));
+});
+router.get('/user/:user', (req, res) => {
+    const query = {
+        user : req.params.user,
+    };
+
+    ReservationModel.find(query)
+        .populate('user')
+        .populate({path:'station',populate:{path:'bikes'}})
         .then((data) => {
             res.json(data);
         })
@@ -40,37 +54,15 @@ router.get('/:id', (req, res) => {
 router.post(
     '/add',
     upload.single('imageData'),
-    passport.authenticate('jwt', { session: false }),
     (req, res) => {
         var newBike;
-        if (req.file) {
-            newStation = new StationModel({
-                title: req.body.title,
-                archived: false,
-                alt: req.body.alt,
-                lng: req.body.lng,
-                image: req.file.path,
-                user: req.body.user,
-                numberOfBikesCapacity: req.body.numberOfBikesCapacity,
-                numberOfBikesAvailable: req.body.numberOfBikesAvailable,
-                etat: req.body.etat,
-            });
-        }
-        else{
-            newStation = new StationModel({
-                title: req.body.title,
-                archived: false,
-                alt: req.body.alt,
-                lng: req.body.lng,
-                user: req.body.user,
-                numberOfBikesCapacity: req.body.numberOfBikesCapacity,
-                numberOfBikesAvailable: req.body.numberOfBikesAvailable,
-                etat: req.body.etat,
-            });
 
-        }
-       // console.log(req.body.user.local);
-        newStation
+            newReservation = new ReservationModel({
+                dateReservation: req.body.dateReservation,
+                station: req.body.station,
+                user: req.body.user,
+            });
+        newReservation
             .save()
             .then((station) => res.json(station))
             .catch((err) => res.status(400).json(err));

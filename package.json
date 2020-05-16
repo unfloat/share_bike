@@ -41,9 +41,15 @@
 		"os": "^0.1.1",
 		"passport": "^0.4.0",
 		"passport-jwt": "^4.0.0",
+		"passport-facebook-token": "^3.3.0",
+		"passport-google-id-token": "^0.4.6",
+		"passport-google-oauth20": "^2.0.0",
+		"passport-google-plus-token": "^2.1.0",
+		"passport-local": "^1.0.0",
 		"reactstrap": "^8.4.1",
 		"request": "^2.88.0",
-		"validator": "^10.11.0"
+		"validator": "^10.11.0",
+		"stripe": "^8.48.0"
 	},
 	"devDependencies": {
 		"concurrently": "^4.1.2",

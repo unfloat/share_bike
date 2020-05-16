@@ -190,12 +190,13 @@ class BikesMap extends Component {
         newBike.append("disponibilite", this.state.disponibilite);
         newBike.append("type", this.state.type);
         newBike.append("weight", this.state.weight);
-        newBike.append("user", this.props.user.id);
+        newBike.append("user", this.props.user.id._id);
         newBike.append("station",this.state.id);
         newBike.append("archived", false);
+        console.log(this.props.user.id._id);
         if (this.state.activeTab ==='1'){
             this.props.addBikeToStation(newBike);
-            console.log(this.state.id);
+            //console.log(this.state.id);
             window.location.reload();
         }
 

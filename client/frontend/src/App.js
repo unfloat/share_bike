@@ -14,7 +14,6 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-            <Route exact path="/" component={MapBox} />
           <Route exact path="/" component={Homepage} />
           <Route path="/event/:id" component={Event} />
         </Switch>

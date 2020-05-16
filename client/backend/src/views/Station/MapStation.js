@@ -203,8 +203,9 @@ class MapStation extends Component {
     newStation.append("numberOfBikesCapacity", this.state.numberOfBikesCapacity);
     newStation.append("numberOfBikesAvailable", this.state.numberOfBikesAvailable);
     newStation.append("etat", this.state.etat);
-    newStation.append("user", this.props.user.id);
+    newStation.append("user", this.props.user.id._id);
     newStation.append("archived", this.state.archived);
+
     if (this.state.mode ==="modify"){
       this.props.editStation(newStation, this.state.id);
     }
